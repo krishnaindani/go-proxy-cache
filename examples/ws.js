@@ -1,17 +1,19 @@
-var https = require('https');
-var fs = require('fs');
-var WebSocket = require('ws');
+var https = require('https')
+var fs = require('fs')
+var WebSocket = require('ws')
 
-console.log("Server started");
+function onConnection (ws) {
+  ws.on('message', function (message) {
+    console.log('Received from client: %s', message)
+    ws.send('Server received from client: ' + message)
+  })
+}
+
+console.log('Server started')
 
 // WS
-ws = new WebSocket.Server({port: 9001});
-ws.on('connection', function(ws) {
-    ws.on('message', function(message) {
-      console.log('Received from client: %s', message);
-      ws.send('Server received from client: ' + message);
-  });
-});
+const ws = new WebSocket.Server({ port: 9001 })
+ws.on('connection', onConnection)
 
 // WSS
 // Ref: https://github.com/websockets/ws/blob/master/examples/ssl.js
@@ -21,12 +23,8 @@ const server = https.createServer({
   ca: fs.readFileSync('./ca-crt.pem'),
   requestCert: false,
   rejectUnauthorized: false
-});
-wss = new WebSocket.Server({ server });
-wss.on('connection', function(wss) {
-  wss.on('message', function(message) {
-    console.log('Received from client: %s', message);
-    wss.send('Server received from client: ' + message);
-  });
-});
-server.listen(9002);
+})
+
+const wss = new WebSocket.Server({ server })
+wss.on('connection', onConnection)
+server.listen(9002)

@@ -38,7 +38,7 @@ func setCommonConfig() {
 			Upstream: config.Upstream{
 				Host:      "www.testing.local",
 				Scheme:    "https",
-				Endpoints: []string{"127.0.0.1:8080"},
+				Endpoints: []string{"127.0.0.1:2080"},
 			},
 		},
 		Cache: config.Cache{

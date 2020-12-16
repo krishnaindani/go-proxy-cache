@@ -14,18 +14,38 @@ jobs:
 
   build-test:
     runs-on: ubuntu-20.04
+    container: golang:alpine
+    services:
+      redis:
+        image: redis:6.0.8-alpine3.12
+      nginx:
+        image: nginx:1.19.5-alpine
+        ports:
+          - "8080:80" # http
+          - "8081:81" # ws
+          - "8082:82" # wss
+          - "8083:443" # https
+        volumes:
+          - /examples/vhost.conf:/etc/nginx/conf.d/vhost.conf
+          - /examples/certs/server.key:/server.key
+          - /examples/certs/server.pem:/server.pem
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install Dependencies
+        run: |
+          apk update
+          apk add make gcc libc-dev
+
       - name: Build
-        run: make build
+        run: make build-race
 
       - name: Test
         run: |
-          sudo apt-get install -y redis-server
-          redis-server &
-          ./bin/gen-selfsigned-cert.sh
-          ./go-proxy-cache -debug -config=config.sample.yml &
+          echo "127.0.0.1 testing.local www.testing.local" | sudo tee -a /etc/hosts
+          cd examples
+          ../go-proxy-cache -debug -config=config.yml &
+          cd ..
           make test
 
       - name: Coverage

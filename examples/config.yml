@@ -3,11 +3,11 @@
 ################################################################################
 server:
   port:
-    http: "80"
-    https: "443"
+    http: "2080"
+    https: "2443"
   tls:
-    cert_file: server.pem
-    key_file: server.key
+    cert_file: certs/server.pem
+    key_file: certs/server.key
   timeout:
     read: 5s
     read_header: 2s

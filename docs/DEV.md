@@ -8,11 +8,11 @@
 
 ## Setup
 
-```
-echo "127.0.0.1 testing.local www.testing.local" >> /etc/hosts
-cd examples
-./gen-selfsigned-cert.sh*
-docker-compose up
+```console
+$ echo "127.0.0.1 testing.local www.testing.local" >> /etc/hosts
+$ cd examples
+$ ./gen-selfsigned-cert.sh
+$ docker-compose up
 ```
 
 ## Test
@@ -34,6 +34,6 @@ Server received from client: {}
 
 Launch wrk then:
 
-```
-lsof -p PID | wc -l
+```console
+$ lsof -p PID | wc -l
 ```
